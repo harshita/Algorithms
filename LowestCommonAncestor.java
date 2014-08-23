@@ -53,8 +53,7 @@ public class LowestCommonAncestor {
     //Get height of node
     public static int getHeight(TreeNode node) {
          int height = 0;
-         if (node == null)
-             return 0;
+
          while (node != null) {
              height++;
              node = node.getParent();
@@ -68,16 +67,17 @@ public class LowestCommonAncestor {
         if (root == null)
             return null;
 
-        if (root.equals(node1) || root.equals(node2))
+        if (root == node1 || root == node2)
             return root;
 
         TreeNode left = getLCA(root.getLeft(), node1, node2);
         TreeNode right = getLCA(root.getRight(), node1, node2);
+
         //We only find LCA when we have some value in left as well as right
         if (left != null && right != null)
             return root;
 
-        return left != null? left : right;
+        return left != null ? left : right;
     }
 
     //Non-recursive solution that leverages parent pointer to find LCA in O(h) time.
@@ -85,23 +85,16 @@ public class LowestCommonAncestor {
         int hn1 = getHeight(node1);
         int hn2 = getHeight(node2);
 
-        //make second node1 the deeper node.
+        //make second node the deeper node.
         //Swap the heights and the nodes
         if (hn1 > hn2) {
-            int temp = hn1;
-            hn1 = hn2;
-            hn2 = temp;
-
             TreeNode tempNode = node1;
             node1 = node2;
             node2 = tempNode;
         }
 
-        //Now hn1 < hn2, so node2 is deeper
-        int heightdiff = hn2 - hn1;
-
-        //Lets get node2 at the same level as node1
-        for (int i = 1; i < heightdiff; i++) {
+        //Lets get node2 at the same level as the shallower node
+        for (int i = 1; i < Math.abs(hn1 - hn2); i++) {
             node2 = node2.getParent();
         }
 
